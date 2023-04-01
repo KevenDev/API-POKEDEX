@@ -4,17 +4,15 @@ const url = `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`
 
 function pokemonToHtml(pokemon){
   return `
-  <li class="li_pokemon">
-    <span class="id_pokemon"> #001</span>
+  <li class="li_pokemon ${pokemon.type}">
+    <span class="id_pokemon"> #${pokemon.number}</span>
     <span class="name_pokemon"> ${pokemon.name} </span>
     
     <div class="detail_pokemon">
       <ol class="types_pokemon">
-        <li class="type">grass</li>
-        <li class="type">poison</li>
-      </ol>
-    
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/1.svg" 
+        ${pokemon.types.map((type) => `<li class ="type ${type}">${type}</li>`).join('')}
+      </ol>  
+      <img src="${pokemon.photo}" 
       alt="${pokemon.name}" srcset="">
   </div>
 </li>`
@@ -22,18 +20,10 @@ function pokemonToHtml(pokemon){
 
 const pokemonList = document.querySelector('#pokemonList')
 
-fetch(url)
-.then((res => res.json()))
-.then((data) => {
-  const results = data.results
-  for (let i = 0; i < results.length; i++) {
-    const pokemon = results[i];
+pokeApi.getPokemons().then((results) => {
+  results.map((pokemon) =>{
     pokemonList.innerHTML += pokemonToHtml(pokemon)
-  }
-})
-
-.catch((error) => {
-  console.log(error)
+  })
 })
 
 
